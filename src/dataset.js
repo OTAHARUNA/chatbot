@@ -1,4 +1,4 @@
-//constで定数化しておりdefalutDatasetといった名前で設定
+//constで定数化しておりdefaultDatasetといった名前で設定
 const defaultDataset = {
     "init": {
         answers: [

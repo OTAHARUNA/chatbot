@@ -21,12 +21,31 @@ export default class App extends React.Component {
       open:false
     }
   }
+  //初期のデータセット
+  //initAnswer = () => {
+  //  //デフォルトのデータカレントIDのアンサーズをとりたい。データセットのinitを//まずとりたい
+  //  const initDataset = this.state.dataset[this.state.currentId];
+  //  const initAnswers = initDataset.answers;
+  //  //最終的には変更したい
+  //  this.setState({
+  //    answers:initAnswers
+  //  })
+  //}
+//render()後に一度だけ呼ばれる関数。一度目のrender終わったとに副作用働く
+//最初のrender走った状態だとanswersは初期の空っぽの状態以下のターンで
+ // componentDidMount() {
+ //   //datasetの値に書き換わる
+ // //  this.initAnswers()
+ // }
   //クラスコンポーネントの為return～始めるのではなく前にrender～
   render(){
     return (
       <section className="c-section">
         <div className="c-box">
-          <AnswersList />
+          {/* Answer.jsxで受け取れる
+           {defaultDataset}
+          <AnswersList answers={this.state.answers} />*/}
+          <AnswersList/>
         </div>
       </section>
     );
