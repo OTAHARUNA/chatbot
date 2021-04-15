@@ -14,7 +14,7 @@ const Answer = (props) => {
   //const classes = useStyles();
   return (
     <Button variant="contained" color="secondary">
-      {/*{props.answer.content}でエラーが起きてしまうpropsが受け取れていない */}
+      {/*{props.answer.content}でエラーが起きてしまう。propsが受け取れていない。正：props.content→Answeralistにてanswer迄取得している */}
       {props.content}
     </Button>
   )
