@@ -24,7 +24,9 @@
 
 .c-grid__answer {
     display: flex;
+    /*列毎に折り返し*/
     flex-flow: column;
+    /*フレックスアイテムを末尾に寄せる*/
     justify-content: flex-end;
     height: 192px;
 }
