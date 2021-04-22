@@ -9,9 +9,9 @@ const Chat = (props) => {
   //props.typeでquestionなのかanswerなのかここで判断。isQuestionで論理型で作る
   const isQuestion = (props.type === 'question');
   //?trueの時 : questionの時  →左から順番に詰めて行う。
-  const classes = isQuestion ? 'p-chat_row' : 'p-chat_reverse';
+  const classes = isQuestion ? 'p-chat__row' : 'p-chat__reverse';
   return (
-      <ListItem>
+      <ListItem className={classes}>
       <ListItemAvatar>
         {isQuestion ? (
           <Avatar alt="icon" src={flower} />

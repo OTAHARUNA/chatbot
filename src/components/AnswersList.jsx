@@ -9,7 +9,8 @@ const AnswersList = (props) => {
       {/*propsで受け取る。１つ１つvalueとindex渡していく。ここが箱の役割
       map(配列内で定義した中身,各要素のインデックス番号)*/}
       {props.answers.map((value, index) => {
-        return <Answer content={value.content} key={ index.toString() }/>
+        {/*Answerへバケツリレーをしてあげる */}
+        return <Answer content={value.content} nextId={value.nextId} key={ index.toString() } select={props.select}/>
       })}
       {/*<Answer content={props}/>*/}
     </div>

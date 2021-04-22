@@ -21,56 +21,56 @@ export default class App extends React.Component {
       dataset: defaultDataset,
       open:false
     }
+    //bindされたコールバック関数にできる
+    this.selectAnswer = this.selectAnswer.bind(this)
   }
+  //回答だけ表示になる為、次のQuestionも表示できるようにする為、下記とselectAnswer記載
+  displayNextQuestion = (nextQuestionId) => {
+    const chats = this.state.chats
+    chats.push({
+      //次のquestionを見る為に例）"job＿offer選択されたならそちらのquestion表示。
+      text: this.state.dataset[nextQuestionId].question,
+      type:'question'
+    })
 
+    this.setState({
+      answers: this.state.dataset[nextQuestionId].answers,
+      chats: chats,
+      currentId: nextQuestionId
+    })
+  }
+//以下selectAnswerは、Answer.jsxで使いたい。
   selectAnswer = (selectedAnswer, nextQuestionId) => {
     //selectAnswerを汎用的にしたいため条件分岐作成
     switch (true) {
       case (nextQuestionId === "init"):
+        this.displayNextQuestion(nextQuestionId)
         break;
       //defaultはinit以外の時には以下処理するといった意味
       default:
+        const chats = this.state.chats;
+        chats.push({
+          text: selectedAnswer,
+          type: 'answers'
+        })
+        this.setState({
+          chats:chats
+        })
+
+        //次への質問に対しての処理
+        this.displayNextQuestion(nextQuestionId)
         break;
     }
   }
 
-
-  //初期のデータセット answersの連想配列にdatasetを入れたいため。
-  initAnswer = () => {
-    //デフォルトのデータセットは連想配列のためそのdataset.jsのinitをまずとりたい
-    const initDataset = this.state.dataset[this.state.currentId];
-    const initAnswers = initDataset.answers;
-    //最終的には以下でanswersの中身を変更したい
-    this.setState({ answers: initAnswers });
-  }
-  //Chatsのデータ受け渡し
-  initChats = () => {
-    //デフォルトのデータセットは連想配列のためそのdataset.jsのinitをまずとりたい
-    //initDatasetはdataset.jsの"init"のanswers～question迄を指す。
-    const initDataset = this.state.dataset[this.state.currentId];
-    const chat = {
-      text: initDataset.question,
-      type: 'question'
-    }
-
-    //上記で追加すべきchatは取得できたため、更新する為下記追加。下記は現在のchats
-    const chats = this.state.chats;
-    //空のところに連想配列をプッシュしている→setStateされる※Reactではstate変えるには必ずsetStateしないといけない。プッシュは連想配列に追加するコマンド
-    chats.push(chat)
-
-    this.setState({
-      chats:chats
-    })
-  }
 
 //コンポーネントが初期化して次のrenderが走るときに何かしら副作用のある処理したいとき
 //最初のrender走った時はまだ初期の空の状態。最初のrenderが終わって以下のターンになった時に実行される→データセットのinitの部分に書き換わる→再度renderが走ってデータが表示できるようになる
   componentDidMount() {
-    //最初のrender後stateがここでやっとChatsコンポーネントに受け渡される。
-    this.initChats()
-    //datasetの値に書き換わる
-    this.initAnswer()
+    const initAnswer = "";
+    this.selectAnswer(initAnswer,this.state.currentId)
   }
+
 
   //クラスコンポーネントの為return～始めるのではなく前にrender～
   render(){
@@ -78,8 +78,9 @@ export default class App extends React.Component {
       <section className="c-section">
         <div className="c-box">
           {/* Answer.jsxで受け取れる。下OK 初期のanswersは空の配列だがanswersに連想配列が入ったらAnswerListのpropsで受け取れるようになる*/}
-          <Chats chats={ this.state.chats }/>
-          <AnswersList answers={this.state.answers} />
+          <Chats chats={this.state.chats} />
+          {/*()がついているとレンダーされるたびに実行されてしまうため外して変数の名前として渡してあげる。 */}
+          <AnswersList answers={this.state.answers} select={this.selectAnswer} />
         </div>
       </section>
     );
