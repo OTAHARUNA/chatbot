@@ -3,7 +3,7 @@ import React from 'react';
 import defaultDataset from './dataset';
 import './assets/styles/style.css';
 //index.jsの中で宣言されているAnswersList,Chats→エントリポイント使っていたらこのようにまとめられる！
-import {AnswersList,Chats} from './components/index';
+import { AnswersList, Chats ,FormDialog } from './components/index';
 
 //function App()→クラスコンポーネントに変更するstateとライフサイクル使いたいため。
 //クラスのため直接exportする。
@@ -19,10 +19,15 @@ export default class App extends React.Component {
       currentId: "init",
       //実際にデータベースと接続してデータセットはまだせずローカル。dataset.jsに行く
       dataset: defaultDataset,
-      open:false
+      //実際にformDialogを開くか閉じるか判断する
+      open:true
     }
     //bindされたコールバック関数にできる
     this.selectAnswer = this.selectAnswer.bind(this)
+
+    this.handleClickOpen = this.handleClickOpen.bind(this)
+    //bindが必要 handleCloseがbindされたので直接渡せばいいレンダーされるたびに実行されることがないためパフォーマンス向上。
+    this.handleClose = this.handleClose.bind(this)
   }
   //回答だけ表示になる為、次のQuestionも表示できるようにする為、下記とselectAnswer記載
   displayNextQuestion = (nextQuestionId) => {
@@ -76,6 +81,14 @@ export default class App extends React.Component {
         //break;
     }
   }
+//モーダル
+  handleClickOpen = () => {
+    //openのstateをtrue
+    this.setState({ open: true });
+  }
+  handleClose = () => {
+    this.setState({open:false});
+  }
 
 
 //コンポーネントが初期化して次のrenderが走るときに何かしら副作用のある処理したいとき
@@ -102,6 +115,8 @@ export default class App extends React.Component {
           <Chats chats={this.state.chats} />
           {/*()がついているとレンダーされるたびに実行されてしまうため外して変数の名前として渡してあげる。 */}
           <AnswersList answers={this.state.answers} select={this.selectAnswer} />
+          {/*FormDialogにてpropsで管理できるようになる。open={this.props.open} */}
+          <FormDialog open={this.state.open} handleClose={this.handleClose }/>
         </div>
       </section>
     );
