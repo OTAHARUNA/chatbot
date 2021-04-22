@@ -44,7 +44,7 @@ export default class App extends React.Component {
     //selectAnswerを汎用的にしたいため条件分岐作成
     switch (true) {
       case (nextQuestionId === "init"):
-        this.displayNextQuestion(nextQuestionId)
+        setTimeout((() => this.displayNextQuestion(nextQuestionId)), 500);
         break;
       //defaultはinit以外の時には以下処理するといった意味
       default:
@@ -56,10 +56,13 @@ export default class App extends React.Component {
         this.setState({
           chats:chats
         })
+        //次の質問がくるまで少し時間をおいてあげる。チャット遅延機能。こちらのほうが応答している感。
+        setTimeout((() => this.displayNextQuestion(nextQuestionId)), 1000);
+        break;
 
         //次への質問に対しての処理
-        this.displayNextQuestion(nextQuestionId)
-        break;
+        //this.displayNextQuestion(nextQuestionId)
+        //break;
     }
   }
 
