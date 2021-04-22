@@ -70,7 +70,14 @@ export default class App extends React.Component {
     const initAnswer = "";
     this.selectAnswer(initAnswer,this.state.currentId)
   }
-
+  //前回と比較して使えるようになる
+  componentDidUpdate() {
+    //Chatsの'scroll-area'から持ってくる
+    const scrollArea = document.getElementById('scroll-area')
+    if (scrollArea) {
+      scrollArea.scrollTop = scrollArea.scrollHeight
+    }
+  }
 
   //クラスコンポーネントの為return～始めるのではなく前にrender～
   render(){
