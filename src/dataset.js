@@ -47,6 +47,7 @@ const defaultDataset = {
         question: "その他についてですね。コチラからお問い合わせできます。",
     },
     "consultant": {
+        //URLがnextIdに入っているとエラー。外部ページに飛ばすコードが必要→App.jsxへ
         answers: [
             {content: "YouTubeで動画を見る", nextId: "https://www.youtube.com/channel/UC-bOAxx-YOsviSmqh8COR0w"},
             {content: "学習コミュニティについて知りたい", nextId: "community"},

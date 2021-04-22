@@ -43,8 +43,19 @@ export default class App extends React.Component {
   selectAnswer = (selectedAnswer, nextQuestionId) => {
     //selectAnswerを汎用的にしたいため条件分岐作成
     switch (true) {
+      //nextIdがhttpsから始まるものか判定する必要がある。次の質問に飛ばせばいいのか/外部ページに飛ばせばいいのか。
       case (nextQuestionId === "init"):
         setTimeout((() => this.displayNextQuestion(nextQuestionId)), 500);
+        break;
+        //先頭が以下。＊は何でも。test(判定する文字列)→nextIdがhttpsから始まるものかと確認
+      case (/^https:*/.test(nextQuestionId)):
+        //リンクのaタグのDOM要素をを作る。
+        const a = document.createElement('a');
+        //リンク先にnextQuestionIDを入れる。
+        a.href = nextQuestionId;
+        //ブラウザの別タブでひらく為に以下かく。そのままだとそのページで飛んでしまう。
+        a.target = '_blank';
+        a.click();
         break;
       //defaultはinit以外の時には以下処理するといった意味
       default:
