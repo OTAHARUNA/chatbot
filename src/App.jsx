@@ -1,9 +1,10 @@
 import React from 'react';
 //外部ファイルdataset使えるようにしたい。from以下は相対パス。
-import defaultDataset from './dataset';
+// import defaultDataset from './dataset';
 import './assets/styles/style.css';
 //index.jsの中で宣言されているAnswersList,Chats→エントリポイント使っていたらこのようにまとめられる！
-import { AnswersList, Chats ,FormDialog } from './components/index';
+import { AnswersList, Chats, FormDialog } from './components/index';
+import {db} from './firebase/index';
 
 //function App()→クラスコンポーネントに変更するstateとライフサイクル使いたいため。
 //クラスのため直接exportする。
@@ -18,9 +19,10 @@ export default class App extends React.Component {
       //initしたときに下記のdataset初期化したとき
       currentId: "init",
       //実際にデータベースと接続してデータセットはまだせずローカル。dataset.jsに行く
-      dataset: defaultDataset,
+      // dataset: defaultDataset, firestoreからもってくるようにする為にこちらは空に
+      dataset:[],
       //実際にformDialogを開くか閉じるか判断する
-      open:true
+      open:false
     }
     //bindされたコールバック関数にできる
     this.selectAnswer = this.selectAnswer.bind(this)
@@ -52,6 +54,11 @@ export default class App extends React.Component {
       case (nextQuestionId === "init"):
         setTimeout((() => this.displayNextQuestion(nextQuestionId)), 500);
         break;
+
+      case (nextQuestionId === "contact"):
+        this.handleClickOpen();
+        break;
+
         //先頭が以下。＊は何でも。test(判定する文字列)→nextIdがhttpsから始まるものかと確認
       case (/^https:*/.test(nextQuestionId)):
         //リンクのaタグのDOM要素をを作る。
@@ -89,13 +96,33 @@ export default class App extends React.Component {
   handleClose = () => {
     this.setState({open:false});
   }
+  initDataset = (dataset) => {
+    this.setState({dataset: dataset})
+  }
 
 
 //コンポーネントが初期化して次のrenderが走るときに何かしら副作用のある処理したいとき
 //最初のrender走った時はまだ初期の空の状態。最初のrenderが終わって以下のターンになった時に実行される→データセットのinitの部分に書き換わる→再度renderが走ってデータが表示できるようになる
   componentDidMount() {
-    const initAnswer = "";
-    this.selectAnswer(initAnswer,this.state.currentId)
+    // データセットはこちらに書くことが多い。最初のレンダーが終わった時に取得しに行きたい。データベースへの接続が非同期処理になってしまう。非同期処理を待ってから次の処理に進みますよといった形がとれるのが「asyncつき即時関数」
+    (async () => {
+      const dataset = this.state.dataset
+      await db.collection('questions').get().then(snapshots => {
+        snapshots.forEach(doc => {
+          //firebase上のコレクション
+          const id = doc.id
+          // firestore上のドキュメント
+          const data = doc.data()
+          // answers一覧
+          dataset[id]=data
+        })
+      })
+      this.initDataset(dataset)
+      const initAnswer = "";
+      this.selectAnswer(initAnswer,this.state.currentId)
+    })()
+    // const initAnswer = "";
+    // this.selectAnswer(initAnswer,this.state.currentId)
   }
   //前回と比較して使えるようになる
   componentDidUpdate() {
